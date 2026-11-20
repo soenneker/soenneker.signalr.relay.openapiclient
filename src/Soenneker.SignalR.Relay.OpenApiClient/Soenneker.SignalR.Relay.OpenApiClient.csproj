@@ -10,12 +10,12 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>SignalR relay relay management OpenApiSuite</Description>
+        <Description>SignalR relay management OpenApiSuite</Description>
         <Version Condition="'$(BUILD_VERSION)' == ''">11.0.0</Version>
         <Version Condition="'$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
         <AssemblyName>Soenneker.SignalR.Relay.OpenApiClient</AssemblyName>
         <PackageId>Soenneker.SignalR.Relay.OpenApiClient</PackageId>
-        <PackageTags>cloudflare signalr openapiclient relay management openapi kiota client cloudflaresignalropenapiclient csharp dotnet c# .net</PackageTags>
+        <PackageTags>signalr openapiclient relay management openapi kiota client signalrrelayopenapiclient csharp dotnet c# .net</PackageTags>
         <Copyright>Copyright © 2026 Jake Soenneker</Copyright>
         <Authors>Jake Soenneker</Authors>
         <Company>https://soenneker.com</Company>

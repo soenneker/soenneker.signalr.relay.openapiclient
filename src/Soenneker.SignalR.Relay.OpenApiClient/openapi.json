@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "SignalR relay Relay Management",
+    "title": "SignalR Relay Management",
     "version": "1.0.0"
   },
   "paths": {

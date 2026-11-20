@@ -1,0 +1,886 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SignalR relay Relay Management",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "GetServiceHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success."
+          }
+        }
+      },
+      "head": {
+        "operationId": "CheckServiceHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success."
+          }
+        }
+      }
+    },
+    "/api/hubs/{hub}/:send": {
+      "post": {
+        "operationId": "Broadcast",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional nonempty GUID. Reuse for the same request within the five-minute retention window.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "excluded",
+            "in": "query",
+            "description": "Connection IDs omitted from delivery.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Send accepted."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "409": {
+            "description": "The idempotency key was used for a different request."
+          },
+          "413": {
+            "description": "Request or retained reply exceeds its size limit."
+          },
+          "415": {
+            "description": "A JSON request body is required."
+          },
+          "429": {
+            "description": "The relay has reached its operation limit."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManagementInvocation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hubs/{hub}/connections/{id}": {
+      "head": {
+        "operationId": "CheckConnection",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "Resource missing.",
+            "headers": {
+              "x-ms-error-code": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "CloseConnection",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "Resource missing.",
+            "headers": {
+              "x-ms-error-code": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/hubs/{hub}/connections/{id}/:invoke": {
+      "post": {
+        "operationId": "InvokeClient",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional nonempty GUID. Reuse for the same request within the five-minute retention window.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SignalR JSON completion terminated by byte 0x1e.",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "headers": {
+              "X-ASRS-Protocol": {
+                "schema": {
+                  "type": "string",
+                  "example": "json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "The target connection was not found."
+          },
+          "409": {
+            "description": "The idempotency key was used for a different request."
+          },
+          "410": {
+            "description": "Client disconnected."
+          },
+          "413": {
+            "description": "Request or retained reply exceeds its size limit."
+          },
+          "415": {
+            "description": "A JSON request body is required."
+          },
+          "429": {
+            "description": "The relay has reached its operation limit."
+          },
+          "504": {
+            "description": "Client completion timed out."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManagementInvocation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hubs/{hub}/connections/{id}/:send": {
+      "post": {
+        "operationId": "SendToConnection",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional nonempty GUID. Reuse for the same request within the five-minute retention window.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "excluded",
+            "in": "query",
+            "description": "Connection IDs omitted from delivery.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Send accepted."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "The target connection was not found."
+          },
+          "409": {
+            "description": "The idempotency key was used for a different request."
+          },
+          "413": {
+            "description": "Request or retained reply exceeds its size limit."
+          },
+          "415": {
+            "description": "A JSON request body is required."
+          },
+          "429": {
+            "description": "The relay has reached its operation limit."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManagementInvocation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hubs/{hub}/connections/{id}/groups": {
+      "delete": {
+        "operationId": "LeaveAllGroups",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/hubs/{hub}/groups/{group}": {
+      "head": {
+        "operationId": "CheckGroup",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "Resource missing.",
+            "headers": {
+              "x-ms-error-code": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/hubs/{hub}/groups/{group}/:send": {
+      "post": {
+        "operationId": "SendToGroup",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional nonempty GUID. Reuse for the same request within the five-minute retention window.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "excluded",
+            "in": "query",
+            "description": "Connection IDs omitted from delivery.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Send accepted."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "409": {
+            "description": "The idempotency key was used for a different request."
+          },
+          "413": {
+            "description": "Request or retained reply exceeds its size limit."
+          },
+          "415": {
+            "description": "A JSON request body is required."
+          },
+          "429": {
+            "description": "The relay has reached its operation limit."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManagementInvocation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hubs/{hub}/groups/{group}/connections/{id}": {
+      "put": {
+        "operationId": "JoinGroup",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "Resource missing.",
+            "headers": {
+              "x-ms-error-code": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "LeaveGroup",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/hubs/{hub}/users/{user}": {
+      "head": {
+        "operationId": "CheckUser",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "Resource missing.",
+            "headers": {
+              "x-ms-error-code": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/hubs/{hub}/users/{user}/:send": {
+      "post": {
+        "operationId": "SendToUser",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Optional nonempty GUID. Reuse for the same request within the five-minute retention window.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "excluded",
+            "in": "query",
+            "description": "Connection IDs omitted from delivery.",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Send accepted."
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "409": {
+            "description": "The idempotency key was used for a different request."
+          },
+          "413": {
+            "description": "Request or retained reply exceeds its size limit."
+          },
+          "415": {
+            "description": "A JSON request body is required."
+          },
+          "429": {
+            "description": "The relay has reached its operation limit."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManagementInvocation"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "GetHealth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success."
+          }
+        }
+      }
+    },
+    "/ready/{hub}": {
+      "get": {
+        "operationId": "CheckHubReadiness",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success."
+          },
+          "503": {
+            "description": "Draining or no server tunnel is ready."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "HS256 or HS512 JWT with issuer azure-signalr and an audience matching the relay scheme, host and escaped request path. Omit the port and query."
+      }
+    },
+    "schemas": {
+      "ManagementInvocation": {
+        "type": "object",
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "type": "string",
+            "minLength": 1
+          },
+          "arguments": {
+            "type": "array",
+            "nullable": true,
+            "items": {},
+            "description": "Ordered JSON arguments of any type."
+          }
+        }
+      }
+    }
+  }
+}

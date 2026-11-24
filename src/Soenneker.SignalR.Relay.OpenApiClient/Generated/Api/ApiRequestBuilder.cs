@@ -4,6 +4,7 @@ using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions;
 using Soenneker.SignalR.Relay.OpenApiClient.Api.Health;
 using Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs;
+using Soenneker.SignalR.Relay.OpenApiClient.Api.Stats;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -25,6 +26,11 @@ namespace Soenneker.SignalR.Relay.OpenApiClient.Api
         public global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.HubsRequestBuilder Hubs
         {
             get => new global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.HubsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The stats property</summary>
+        public global::Soenneker.SignalR.Relay.OpenApiClient.Api.Stats.StatsRequestBuilder Stats
+        {
+            get => new global::Soenneker.SignalR.Relay.OpenApiClient.Api.Stats.StatsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::Soenneker.SignalR.Relay.OpenApiClient.Api.ApiRequestBuilder"/> and sets the default values.

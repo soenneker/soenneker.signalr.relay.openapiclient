@@ -5,6 +5,7 @@ using Microsoft.Kiota.Abstractions;
 using Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Connections;
 using Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Groups;
 using Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Send;
+using Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Stats;
 using Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Users;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +33,11 @@ namespace Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item
         public global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Send.SendRequestBuilder Send
         {
             get => new global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Send.SendRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The stats property</summary>
+        public global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Stats.StatsRequestBuilder Stats
+        {
+            get => new global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Stats.StatsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The users property</summary>
         public global::Soenneker.SignalR.Relay.OpenApiClient.Api.Hubs.Item.Users.UsersRequestBuilder Users

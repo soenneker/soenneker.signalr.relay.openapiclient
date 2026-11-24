@@ -678,6 +678,76 @@
         ]
       }
     },
+    "/api/hubs/{hub}/stats": {
+      "get": {
+        "operationId": "GetHubStatistics",
+        "parameters": [
+          {
+            "name": "hub",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current routing counts on this relay instance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "clientConnections",
+                    "availableServerTunnels",
+                    "connectedUsers",
+                    "activeGroups",
+                    "pendingServerInvocations"
+                  ],
+                  "properties": {
+                    "clientConnections": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "availableServerTunnels": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "connectedUsers": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "activeGroups": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "pendingServerInvocations": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          },
+          "404": {
+            "description": "Unknown hub."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/api/hubs/{hub}/users/{user}": {
       "head": {
         "operationId": "CheckUser",
@@ -815,6 +885,64 @@
             }
           }
         }
+      }
+    },
+    "/api/stats": {
+      "get": {
+        "operationId": "GetRelayStatistics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Current routing counts on this relay instance.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "clientConnections",
+                    "availableServerTunnels",
+                    "connectedUsers",
+                    "activeGroups",
+                    "pendingServerInvocations"
+                  ],
+                  "properties": {
+                    "clientConnections": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "availableServerTunnels": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "connectedUsers": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "activeGroups": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "pendingServerInvocations": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or unsupported application query parameter."
+          },
+          "401": {
+            "description": "Missing or invalid path-scoped bearer token."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
     "/health": {
